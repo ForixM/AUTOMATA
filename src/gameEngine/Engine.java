@@ -1,15 +1,20 @@
 package gameEngine;
 
+import gameEngine.rendering.Scene;
+
 public class Engine {
     public static int WIN_WIDTH = 1280;
     public static int WIN_HEIGHT = 720;
-    public static final int FPS = 1000;
-    public static final double DELTA = (double)1/FPS;
+    public static final int FPS = 120;
+    public static double DELTA = (double)1/FPS;
 
     private Window window;
     private Scene scene;
+
+    public static Engine INSTANCE;
     public Engine(){
         window = new Window(WIN_WIDTH, WIN_HEIGHT, "default");
+        INSTANCE = this;
     }
 
     /**
@@ -29,7 +34,9 @@ public class Engine {
     public void gameLoop(){
         Thread t = new Thread(() -> {
             while (true){
+                long previousTime = System.nanoTime();
                 scene.repaint();
+//                System.out.println("render time: "+((double)(System.nanoTime()-previousTime))+"ms");
                 try {
                     Thread.sleep(1000/FPS);
                 } catch (InterruptedException e) {
