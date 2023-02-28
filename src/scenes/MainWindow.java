@@ -1,6 +1,6 @@
 package scenes;
 
-import gameEngine.Engine;
+import gameEngine.Automata;
 import gameEngine.rendering.Scene;
 import world.Map;
 import world.Tile;
@@ -11,30 +11,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainWindow extends Scene implements MouseWheelListener, KeyListener {
-    private Map map;
+//    private Map map;
     private float moove_speed = 500;
     private List<Integer> keysPressed;
     public MainWindow(){
-        this.map = new Map();
         this.keysPressed = new ArrayList<>();
-        Engine.INSTANCE.getWindow().addKeyListener(this);
+        Automata.INSTANCE.getWindow().addKeyListener(this);
         addMouseWheelListener(this);
     }
 
     double size = 50;
     @Override
     protected void paintComponent(Graphics g) {
-//        super.paintComponent(g);
+        super.paintComponent(g);
         for (Integer integer : keysPressed) {
             switch (integer.intValue()) {
-            case KeyEvent.VK_Z -> Tile.TRANSLATE_Y+=moove_speed*Engine.DELTA;
-            case KeyEvent.VK_S -> Tile.TRANSLATE_Y-=moove_speed*Engine.DELTA;
-            case KeyEvent.VK_Q -> Tile.TRANSLATE_X+=moove_speed*Engine.DELTA;
-            case KeyEvent.VK_D -> Tile.TRANSLATE_X-=moove_speed*Engine.DELTA;
+            case KeyEvent.VK_Z -> Tile.TRANSLATE_Y+=moove_speed* Automata.DELTA;
+            case KeyEvent.VK_S -> Tile.TRANSLATE_Y-=moove_speed* Automata.DELTA;
+            case KeyEvent.VK_Q -> Tile.TRANSLATE_X+=moove_speed* Automata.DELTA;
+            case KeyEvent.VK_D -> Tile.TRANSLATE_X-=moove_speed* Automata.DELTA;
             }
         }
-//        Graphics2D g2d = (Graphics2D) g;
-//        map.renderMap((Graphics2D) g);
+        Automata.INSTANCE.getMap().renderMap(g);
+        g.dispose();
     }
 
     @Override
@@ -56,12 +55,6 @@ public class MainWindow extends Scene implements MouseWheelListener, KeyListener
     public void keyPressed(KeyEvent e) {
         if (!keysPressed.contains(e.getKeyCode()))
             keysPressed.add(e.getKeyCode());
-//        switch (e.getKeyCode()) {
-//            case KeyEvent.VK_Z -> Tile.TRANSLATE_Y+=moove_speed*Engine.DELTA;
-//            case KeyEvent.VK_S -> Tile.TRANSLATE_Y-=moove_speed*Engine.DELTA;
-//            case KeyEvent.VK_Q -> Tile.TRANSLATE_X+=moove_speed*Engine.DELTA;
-//            case KeyEvent.VK_D -> Tile.TRANSLATE_X-=moove_speed*Engine.DELTA;
-//        }
     }
 
     @Override

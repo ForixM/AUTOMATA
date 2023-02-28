@@ -1,39 +1,45 @@
 package world;
 
+import gameEngine.registry.UpdatableTile;
+import utils.PerlinNoise2D;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 public class Map {
     private List<Region> regions;
+    private List<UpdatableTile> updatableTiles;
     public Map(){
         this.regions = new ArrayList<>();
+        this.updatableTiles = new ArrayList<>();
+        PerlinNoise2D.WIDTH = Region.REGION_SIZE;
+        PerlinNoise2D.HEIGHT = Region.REGION_SIZE;
         for (int x = -5; x < 5; x++){
             for (int y = -5; y < 5; y++){
-                regions.add(new Region(x, y));
+                Region region = new Region(x, y);
+                regions.add(region);
             }
         }
     }
 
-    public void renderMap(Graphics2D g){
-        double currentX = Tile.TRANSLATE_X/(double)(Region.REGION_SIZE*Tile.RENDER_SIZE)*-1;
-        double currentY = Tile.TRANSLATE_Y/(double)(Region.REGION_SIZE*Tile.RENDER_SIZE*0.75)*-1;
-//        System.out.println("currentX = "+currentX+", currentY = "+currentY);
-        for (int dX = -2; dX <= 2; dX++){
-            for (int dY = -2; dY <= 2; dY++){
+    public void renderMap(Graphics g){
+        double currentX = Tile.TRANSLATE_X / (Region.REGION_SIZE*Tile.RENDER_SIZE) *-1;
+        double currentY = Tile.TRANSLATE_Y / (Region.REGION_SIZE*Tile.RENDER_SIZE*0.75) *-1;
+        for (int dX = -5; dX <= 5; dX++){
+            for (int dY = -5; dY <= 5; dY++){
                 getRegion((int) currentX+dX, (int) currentY+dY).renderRegion(g);
             }
         }
-//        getRegion((int) currentX+1, (int) currentY).renderRegion(g);
-//        getRegion((int) currentX+2, (int) currentY).renderRegion(g);
-//        getRegion((int) currentX+1, (int) currentY+1).renderRegion(g);
-//        getRegion((int) currentX+2, (int) currentY+2).renderRegion(g);
-//        getRegion((int) currentX+2, (int) currentY+1).renderRegion(g);
-//        getRegion((int) currentX+1, (int) currentY+2).renderRegion(g);
-//        getRegion((int) currentX, (int) currentY+1).renderRegion(g);
-//        getRegion((int) currentX, (int) currentY+2).renderRegion(g);
+    }
+
+    public void updateTiles(){
+        updatableTiles.forEach(UpdatableTile::update);
+    }
+
+    public void addUpdatableTile(UpdatableTile updatableTile){
+        updatableTiles.add(updatableTile);
     }
 
     public Tile getTileAt(int x, int y){
@@ -43,6 +49,12 @@ public class Map {
     }
 
     public Region getRegion(int x, int y){
-        return regions.stream().filter(r -> r.getX() == x && r.getY() == y).findFirst().get();
+        Optional<Region> result = regions.stream().filter(r -> r.getX() == x && r.getY() == y).findFirst();
+        if (result.isPresent()){
+            return result.get();
+        }
+        Region newRegion = new Region(x, y);
+        regions.add(newRegion);
+        return newRegion;
     }
 }
