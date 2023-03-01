@@ -2,10 +2,7 @@ package gameEngine.registry;
 
 import gameEngine.registry.deposits.Coal;
 import gameEngine.registry.items.Stick;
-import gameEngine.registry.tiles.Extractor;
-import gameEngine.registry.tiles.Grass;
-import gameEngine.registry.tiles.Sand;
-import gameEngine.registry.tiles.Water;
+import gameEngine.registry.tiles.*;
 
 import java.util.HashMap;
 
@@ -16,6 +13,7 @@ public class Registration {
     public static RegistryObject<Grass> grass = registerObject(new Grass("grass"));
     public static RegistryObject<Sand> sand = registerObject(new Sand("sand"));
     public static RegistryObject<Water> water = registerObject(new Water("water"));
+    public static RegistryObject<Chest> chest = registerObject(new Chest("chest_temp"));
 
     public static RegistryObject<Extractor> extractor = registerObject(new Extractor("extractor"));
 

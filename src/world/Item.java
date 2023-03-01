@@ -21,4 +21,9 @@ public class Item {
     public boolean sameItem(Item item){
         return item.getBase().getRegistryName().equals(item.getBase().getRegistryName());
     }
+
+    @Override
+    public String toString() {
+        return "{item="+getBase().getRegistryName()+", cout="+count+"}";
+    }
 }

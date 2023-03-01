@@ -11,6 +11,6 @@ public class ExtractorUp extends UpdatableTile {
     @Override
     public void update() {
         test++;
-        System.out.println("update, test: "+test);
+//        System.out.println("update, test: "+test);
     }
 }

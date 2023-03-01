@@ -1,7 +1,9 @@
 package gameEngine;
 
 import gameEngine.registry.Registration;
+import gameEngine.registry.tiles.Chest;
 import gameEngine.rendering.Scene;
+import world.Item;
 import world.Map;
 
 public class Automata {
@@ -28,6 +30,12 @@ public class Automata {
         this.map = new Map();
         map.getTileAt(0, 0).place(Registration.extractor.get());
         map.addUpdatableTile(map.getTileAt(0, 0).getPlaced().getUpdatableCapability());
+        map.getTileAt(0, 1).place(Registration.chest.get());
+        if (map.getTileAt(0, 1).getPlaced() instanceof Chest chest){
+            System.out.println("storage: "+chest.getStorage().getContainer());
+            chest.getStorage().insert(new Item(Registration.stick.get(), 1));
+            System.out.println("storage: "+chest.getStorage().getContainer());
+        }
         this.renderThread = new Thread(this::renderLoop);
         this.logicThread = new Thread(this::logicLoop);
     }
