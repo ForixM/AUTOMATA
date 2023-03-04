@@ -1,7 +1,6 @@
 package gameEngine.registry.tiles;
 
-import gameEngine.registry.Registrable;
-import gameEngine.registry.TileBase;
+import gameEngine.registry.base.TileBase;
 
 public class Grass extends TileBase {
     public Grass(String registryName) {

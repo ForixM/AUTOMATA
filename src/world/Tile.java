@@ -1,17 +1,20 @@
 package world;
 
 import gameEngine.Automata;
-import gameEngine.registry.Deposit;
-import gameEngine.registry.TileBase;
+import gameEngine.registry.base.Deposit;
+import gameEngine.registry.base.TileBase;
+import gameEngine.registry.capabilities.Storage;
 
 import java.awt.*;
 
 public class Tile {
-    private TileBase base;
+    private final TileBase base;
     private Deposit deposit;
     private TileBase placed;
-    private int x, y;
-    public static double RENDER_SIZE = 50;
+    private Storage storage;
+    private final int x;
+    private final int y;
+    public static int RENDER_SIZE = 50;
     public static double TRANSLATE_X = 0;
     public static double TRANSLATE_Y = 0;
     public Tile(TileBase base, int x, int y){
@@ -19,6 +22,7 @@ public class Tile {
         this.x = x;
         this.y = y;
         this.deposit = null;
+        this.storage = base.getStorageCapability();
     }
 
     public Tile(TileBase base, int x, int y, Deposit deposit){
@@ -31,15 +35,16 @@ public class Tile {
     }
 
     public void render(Graphics g){
-        int renderX = (int) (x *RENDER_SIZE+(y%2==0?0:RENDER_SIZE/2)+(int)TRANSLATE_X);
+        int renderX = x *RENDER_SIZE+(y%2==0?0:RENDER_SIZE/2)+(int)TRANSLATE_X;
         int renderY = y * (int) (RENDER_SIZE * 0.75) + (int) TRANSLATE_Y;
+
         if (renderX >= -RENDER_SIZE && renderY > -RENDER_SIZE && renderX < Automata.WIN_WIDTH && renderY < Automata.WIN_HEIGHT) {
-            g.drawImage(base.getTexture().getImage(), renderX, renderY, (int) RENDER_SIZE, (int) RENDER_SIZE, null);
+            g.drawImage(base.getTexture().getImage(), renderX, renderY, RENDER_SIZE, RENDER_SIZE, null);
             if (deposit != null) {
-                g.drawImage(deposit.getTexture().getImage(), renderX, renderY, (int) RENDER_SIZE, (int) RENDER_SIZE, null);
+                g.drawImage(deposit.getTexture().getImage(), renderX, renderY, RENDER_SIZE, RENDER_SIZE, null);
             }
             if (placed != null){
-                g.drawImage(placed.getTexture().getImage(), renderX, renderY, (int) RENDER_SIZE, (int) RENDER_SIZE, null);
+                g.drawImage(placed.getTexture().getImage(), renderX, renderY, RENDER_SIZE, RENDER_SIZE, null);
             }
         }
     }
@@ -54,6 +59,10 @@ public class Tile {
 
     public TileBase getPlaced() {
         return placed;
+    }
+
+    public Storage getStorage() {
+        return storage;
     }
 
     public int getX() {

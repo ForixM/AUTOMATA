@@ -1,6 +1,6 @@
 package world;
 
-import gameEngine.registry.UpdatableTile;
+import gameEngine.registry.capabilities.UpdatableTile;
 import utils.PerlinNoise2D;
 
 import java.awt.*;

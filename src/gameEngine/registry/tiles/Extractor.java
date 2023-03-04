@@ -1,7 +1,7 @@
 package gameEngine.registry.tiles;
 
-import gameEngine.registry.TileBase;
-import gameEngine.registry.UpdatableTile;
+import gameEngine.registry.base.TileBase;
+import gameEngine.registry.capabilities.UpdatableTile;
 import gameEngine.registry.updatable.ExtractorUp;
 
 public class Extractor extends TileBase {

@@ -3,8 +3,12 @@ package gameEngine;
 import gameEngine.registry.Registration;
 import gameEngine.registry.tiles.Chest;
 import gameEngine.rendering.Scene;
+import scenes.MainWindow;
 import world.Item;
 import world.Map;
+import world.Tile;
+
+import java.awt.event.KeyEvent;
 
 public class Automata {
     public static final String ASSETS_PATH = "assets/";
@@ -23,21 +27,37 @@ public class Automata {
     private Thread renderThread;
     private Thread logicThread;
 
+    private KeyHandling keyHandling;
+
     public static Automata INSTANCE;
     public Automata(){
         window = new Window(WIN_WIDTH, WIN_HEIGHT, "default");
         INSTANCE = this;
         this.map = new Map();
+        this.keyHandling = new KeyHandling();
         map.getTileAt(0, 0).place(Registration.extractor.get());
         map.addUpdatableTile(map.getTileAt(0, 0).getPlaced().getUpdatableCapability());
         map.getTileAt(0, 1).place(Registration.chest.get());
-        if (map.getTileAt(0, 1).getPlaced() instanceof Chest chest){
-            System.out.println("storage: "+chest.getStorage().getContainer());
-            chest.getStorage().insert(new Item(Registration.stick.get(), 1));
-            System.out.println("storage: "+chest.getStorage().getContainer());
+        Tile tile = map.getTileAt(0, 1);
+        if (tile.getStorage() != null){
+            System.out.println("storage: "+tile.getStorage());
+            tile.getStorage().insert(new Item(Registration.stick.get(), 1));
+            System.out.println("storage: "+tile.getStorage().getContainer());
         }
         this.renderThread = new Thread(this::renderLoop);
         this.logicThread = new Thread(this::logicLoop);
+        registerKeys();
+    }
+
+    public KeyHandling getKeyHandling() {
+        return keyHandling;
+    }
+
+    private void registerKeys(){
+        keyHandling.handleKey(KeyEvent.VK_Z, () -> Tile.TRANSLATE_Y += MainWindow.MOOVE_SPEED * Automata.DELTA);
+        keyHandling.handleKey(KeyEvent.VK_S, () -> Tile.TRANSLATE_Y -= MainWindow.MOOVE_SPEED * Automata.DELTA);
+        keyHandling.handleKey(KeyEvent.VK_Q, () -> Tile.TRANSLATE_X += MainWindow.MOOVE_SPEED * Automata.DELTA);
+        keyHandling.handleKey(KeyEvent.VK_D, () -> Tile.TRANSLATE_X -= MainWindow.MOOVE_SPEED * Automata.DELTA);
     }
 
     /**
@@ -64,6 +84,7 @@ public class Automata {
         long firstTime = System.currentTimeMillis();
         while (true){
             long previousTime = System.nanoTime();
+            keyHandling.handleKeys();
             scene.repaint();
 //                System.out.println("render time: "+((double)(System.nanoTime()-previousTime))+"ms");
             try {

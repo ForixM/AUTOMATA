@@ -12,13 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Window extends JFrame implements KeyListener {
-    private List<Integer> keyPressed;
     public Window(int width, int height, String title){
-        this.keyPressed = new ArrayList<>();
         setSize(width, height);
         setTitle(title);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+        addKeyListener(this);
         try {
 //            setIconImage(ImageIO.read(new File(Automata.ASSETS_PATH+"icon.png")));
             List<Image> images = new ArrayList();
@@ -31,10 +30,6 @@ public class Window extends JFrame implements KeyListener {
         setVisible(true);
     }
 
-    public List<Integer> getKeyPressed() {
-        return keyPressed;
-    }
-
     @Override
     public void keyTyped(KeyEvent e) {
 
@@ -42,13 +37,11 @@ public class Window extends JFrame implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (!keyPressed.contains(e.getKeyCode())){
-            keyPressed.add(e.getKeyCode());
-        }
+        Automata.INSTANCE.getKeyHandling().keyPressed(e.getKeyCode());
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        keyPressed.remove(e.getKeyCode());
+        Automata.INSTANCE.getKeyHandling().keyReleased(e.getKeyCode());
     }
 }

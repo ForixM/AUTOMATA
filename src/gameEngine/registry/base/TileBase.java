@@ -1,6 +1,10 @@
-package gameEngine.registry;
+package gameEngine.registry.base;
 
+import gameEngine.registry.Registrable;
+import gameEngine.registry.capabilities.Storage;
+import gameEngine.registry.capabilities.UpdatableTile;
 import gameEngine.rendering.Texture;
+import world.Tile;
 
 public abstract class TileBase extends Registrable {
     private Texture texture;
@@ -8,7 +12,7 @@ public abstract class TileBase extends Registrable {
     private UpdatableTile updatableTile;
     public TileBase(String registryName){
         super(registryName);
-        this.texture = new Texture("assets/textures/tiles/"+registryName+".png");
+        this.texture = new Texture("assets/textures/tiles/"+registryName+".png", Tile.RENDER_SIZE);
         this.item = new ItemBase(registryName, texture) {
             @Override
             public String getRegistryName() {
@@ -26,6 +30,10 @@ public abstract class TileBase extends Registrable {
     }
 
     public UpdatableTile getUpdatableCapability(){
+        return null;
+    }
+
+    public Storage getStorageCapability(){
         return null;
     }
 }

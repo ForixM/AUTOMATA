@@ -1,4 +1,4 @@
-package gameEngine.registry;
+package gameEngine.registry.capabilities;
 
 import world.Item;
 

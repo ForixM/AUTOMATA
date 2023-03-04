@@ -1,6 +1,6 @@
 package gameEngine.registry.updatable;
 
-import gameEngine.registry.UpdatableTile;
+import gameEngine.registry.capabilities.UpdatableTile;
 
 public class ExtractorUp extends UpdatableTile {
     private int test = 0;

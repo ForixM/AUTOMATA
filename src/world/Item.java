@@ -1,10 +1,11 @@
 package world;
 
-import gameEngine.registry.ItemBase;
+import gameEngine.registry.base.ItemBase;
 
 public class Item {
     private ItemBase base;
     private int count;
+    public static int RENDER_SIZE = 40;
     public Item(ItemBase itemBase, int count){
         this.base = itemBase;
         this.count = count;
