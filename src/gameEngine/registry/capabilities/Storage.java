@@ -2,44 +2,61 @@ package gameEngine.registry.capabilities;
 
 import world.Item;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public abstract class Storage<T extends Item> {
-    private List<T> container;
-    private int capacity;
+public abstract class Storage {
+    private Item[] container;
 
     public Storage(int capacity){
-        this.capacity = capacity;
-        this.container = new ArrayList<>();
-    }
-
-    public void insert(T toInsert){
-        if (container.size() < capacity){
-            container.add(toInsert);
+        this.container = new Item[capacity];
+        for (int i = 0; i < container.length; i++) {
+            container[i] = Item.EMPTY;
         }
     }
 
-    public T extract(int slot){
-        if (slot < container.size()){
-            T toExtract = container.remove(slot);
-            return toExtract;
-        }
-        return null;
-    }
-
-    public T extract(String registryName){
-        for (T t : container) {
-            if (t.getBase().getRegistryName().equals(registryName)){
-                container.remove(t);
-                return t;
+    public void insert(Item toInsert){
+        for (Item t : container) {
+            if (t != Item.EMPTY && t.sameItem(toInsert)){
+                t.grow(toInsert.getCount());
+                return;
             }
         }
-        return null;
+        for (int i = 0; i < container.length; i++) {
+            if (container[i] == Item.EMPTY){
+                container[i] = toInsert;
+                return;
+            }
+        }
+    }
+
+    public Item extract(int slot){
+        Item toReturn = container[slot];
+        container[slot] = Item.EMPTY;
+        return toReturn;
+//        if (slot < container.size()){
+//            Item toExtract = container.remove(slot);
+//            return toExtract;
+//        }
+//        return null;
+    }
+
+    public Item extract(String registryName){
+        for (int i = 0; i < container.length; i++) {
+            if (container[i] != Item.EMPTY && container[i].getBase().getRegistryName().equals(registryName)){
+                Item toReturn = container[i];
+                container[i] = Item.EMPTY;
+                return toReturn;
+            }
+        }
+//        for (Item t : container) {
+//            if (t != Item.EMPTY && t.getBase().getRegistryName().equals(registryName)){
+//                container.remove(t);
+//                return t;
+//            }
+//        }
+        return Item.EMPTY;
     }
 
     public boolean contains(Item item){
-        for (T t : container) {
+        for (Item t : container) {
             if (t.sameItem(item)){
                 return true;
             }
@@ -48,7 +65,7 @@ public abstract class Storage<T extends Item> {
     }
 
     public boolean containsAtLeast(Item item){
-        for (T t : container) {
+        for (Item t : container) {
             if (t.sameItem(item) && t.getCount() >= item.getCount()){
                 return true;
             }
@@ -56,7 +73,11 @@ public abstract class Storage<T extends Item> {
         return false;
     }
 
-    public List<T> getContainer() {
+    public Item[] getContainer() {
         return container;
+    }
+
+    public int getCapacity() {
+        return container.length;
     }
 }

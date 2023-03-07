@@ -3,11 +3,14 @@ package gameEngine;
 import gameEngine.registry.Registration;
 import gameEngine.registry.tiles.Chest;
 import gameEngine.rendering.Scene;
+import scenes.InventoryOverlay;
 import scenes.MainWindow;
 import world.Item;
 import world.Map;
+import world.Player;
 import world.Tile;
 
+import java.awt.*;
 import java.awt.event.KeyEvent;
 
 public class Automata {
@@ -15,11 +18,12 @@ public class Automata {
     public static final String TEXTURE_PATH = ASSETS_PATH+"textures/";
     public static int WIN_WIDTH = 1280;
     public static int WIN_HEIGHT = 720;
-    public static final int FPS = 60; //Frames Per Second
+    public static final int FPS = 120; //Frames Per Second
     public static final int UPS = 20; //Update Per Second
     public static double DELTA = (double)1/FPS;
 
     private Map map;
+    private Player player;
 
     private Window window;
     private Scene scene;
@@ -31,12 +35,13 @@ public class Automata {
 
     public static Automata INSTANCE;
     public Automata(){
+        this.keyHandling = new KeyHandling();
         window = new Window(WIN_WIDTH, WIN_HEIGHT, "default");
         INSTANCE = this;
+        this.player = new Player();
         this.map = new Map();
-        this.keyHandling = new KeyHandling();
-        map.getTileAt(0, 0).place(Registration.extractor.get());
-        map.addUpdatableTile(map.getTileAt(0, 0).getPlaced().getUpdatableCapability());
+        map.getTileAt(1, 6).place(Registration.extractor.get());
+        map.addUpdatableTile(map.getTileAt(1, 6).getPlaced().getUpdatableCapability(map.getTileAt(1, 6)));
         map.getTileAt(0, 1).place(Registration.chest.get());
         Tile tile = map.getTileAt(0, 1);
         if (tile.getStorage() != null){
@@ -54,10 +59,16 @@ public class Automata {
     }
 
     private void registerKeys(){
-        keyHandling.handleKey(KeyEvent.VK_Z, () -> Tile.TRANSLATE_Y += MainWindow.MOOVE_SPEED * Automata.DELTA);
-        keyHandling.handleKey(KeyEvent.VK_S, () -> Tile.TRANSLATE_Y -= MainWindow.MOOVE_SPEED * Automata.DELTA);
-        keyHandling.handleKey(KeyEvent.VK_Q, () -> Tile.TRANSLATE_X += MainWindow.MOOVE_SPEED * Automata.DELTA);
-        keyHandling.handleKey(KeyEvent.VK_D, () -> Tile.TRANSLATE_X -= MainWindow.MOOVE_SPEED * Automata.DELTA);
+        keyHandling.handleKey(KeyEvent.VK_Z, () -> Player.POS_Y += MainWindow.MOOVE_SPEED * Automata.DELTA, false);
+        keyHandling.handleKey(KeyEvent.VK_S, () -> Player.POS_Y -= MainWindow.MOOVE_SPEED * Automata.DELTA, false);
+        keyHandling.handleKey(KeyEvent.VK_Q, () -> Player.POS_X += MainWindow.MOOVE_SPEED * Automata.DELTA, false);
+        keyHandling.handleKey(KeyEvent.VK_D, () -> Player.POS_X -= MainWindow.MOOVE_SPEED * Automata.DELTA, false);
+        keyHandling.handleKey(KeyEvent.VK_A, () -> {
+            if (window.getContentPane() instanceof MainWindow mainWindow){
+                mainWindow.switchOverlayVisibility();
+                System.out.println("visibility changed");
+            }
+        }, true);
     }
 
     /**
@@ -122,5 +133,9 @@ public class Automata {
 
     public Map getMap() {
         return map;
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 }

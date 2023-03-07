@@ -12,17 +12,30 @@ public class Tile {
     private Deposit deposit;
     private TileBase placed;
     private Storage storage;
+    private Polygon points;
     private final int x;
     private final int y;
     public static int RENDER_SIZE = 50;
-    public static double TRANSLATE_X = 0;
-    public static double TRANSLATE_Y = 0;
     public Tile(TileBase base, int x, int y){
         this.base = base;
         this.x = x;
         this.y = y;
         this.deposit = null;
-        this.storage = base.getStorageCapability();
+        this.storage = null;
+        this.points = new Polygon();
+        rebuildPolygon();
+    }
+
+    private void rebuildPolygon(){
+        points.reset();
+        int renderX = x * RENDER_SIZE + (y%2==0?0:RENDER_SIZE/2) + (int)Player.POS_X;
+        int renderY = y * (int) (RENDER_SIZE * 0.75) + (int) Player.POS_Y;
+        points.addPoint(renderX + RENDER_SIZE/2, renderY);
+        points.addPoint(renderX + RENDER_SIZE, renderY + (int) (RENDER_SIZE*0.25));
+        points.addPoint(renderX + RENDER_SIZE, renderY + (int) (RENDER_SIZE*0.75));
+        points.addPoint(renderX + RENDER_SIZE/2, renderY + RENDER_SIZE);
+        points.addPoint(renderX, renderY + (int) (RENDER_SIZE*0.75));
+        points.addPoint(renderX, renderY + (int) (RENDER_SIZE*0.25));
     }
 
     public Tile(TileBase base, int x, int y, Deposit deposit){
@@ -32,11 +45,13 @@ public class Tile {
 
     public void place(TileBase placed){
         this.placed = placed;
+        this.storage = placed.getStorageCapability();
     }
 
     public void render(Graphics g){
-        int renderX = x *RENDER_SIZE+(y%2==0?0:RENDER_SIZE/2)+(int)TRANSLATE_X;
-        int renderY = y * (int) (RENDER_SIZE * 0.75) + (int) TRANSLATE_Y;
+        int renderX = x * RENDER_SIZE + (y%2==0?0:RENDER_SIZE/2) + (int)Player.POS_X;
+        int renderY = y * (int) (RENDER_SIZE * 0.75) + (int) Player.POS_Y;
+        rebuildPolygon();
 
         if (renderX >= -RENDER_SIZE && renderY > -RENDER_SIZE && renderX < Automata.WIN_WIDTH && renderY < Automata.WIN_HEIGHT) {
             g.drawImage(base.getTexture().getImage(), renderX, renderY, RENDER_SIZE, RENDER_SIZE, null);
@@ -46,6 +61,19 @@ public class Tile {
             if (placed != null){
                 g.drawImage(placed.getTexture().getImage(), renderX, renderY, RENDER_SIZE, RENDER_SIZE, null);
             }
+        }
+    }
+
+    public void onClick(){
+        System.out.println("Tile info:");
+        System.out.println("    base: "+base.getRegistryName());
+        if (deposit != null)
+            System.out.println("    deposit: "+deposit.getRegistryName());
+        if (placed != null)
+            System.out.println("    placed: "+placed.getRegistryName());
+        if (storage != null) {
+            System.out.println("    storage: " + storage.toString());
+            Automata.INSTANCE.getPlayer().getInventory().insert((Item) storage.extract(0));
         }
     }
 
@@ -71,5 +99,9 @@ public class Tile {
 
     public int getY() {
         return y;
+    }
+
+    public Polygon getPolygon() {
+        return points;
     }
 }

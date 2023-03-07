@@ -9,16 +9,10 @@ import world.Tile;
 public abstract class TileBase extends Registrable {
     private Texture texture;
     private ItemBase item;
-    private UpdatableTile updatableTile;
     public TileBase(String registryName){
         super(registryName);
         this.texture = new Texture("assets/textures/tiles/"+registryName+".png", Tile.RENDER_SIZE);
-        this.item = new ItemBase(registryName, texture) {
-            @Override
-            public String getRegistryName() {
-                return super.getRegistryName();
-            }
-        };
+        this.item = new ItemBase(registryName, texture) {};
     }
 
     public Texture getTexture() {
@@ -29,7 +23,7 @@ public abstract class TileBase extends Registrable {
         return item;
     }
 
-    public UpdatableTile getUpdatableCapability(){
+    public UpdatableTile getUpdatableCapability(Tile tile){
         return null;
     }
 

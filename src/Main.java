@@ -9,7 +9,6 @@ public class Main {
         MainWindow main = new MainWindow();
         engine.switchScene(main);
 //        PerlinScene scene = new PerlinScene();
-        engine.switchScene(main);
         engine.gameLoop();
 
 //        BufferedImage img = PerlinNoise2D.getNoiseImage();
